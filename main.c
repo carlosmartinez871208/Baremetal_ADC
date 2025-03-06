@@ -80,6 +80,7 @@
 #define ADC1_SQR1_L (0x0ul) /* Only one channel is in sequence */
 #define ADC1_SQR3_SQ1 (0x1ul) /* Channel 1 as first in the sequence. */
 #define ADC1_CR2_ADON (0x1ul) /* Enable ADC */
+#define ADC1_CR2_CONT (1ul << 1) /* Enable continous convertion */
 #define ADC1_CR2_SWSTART (1ul << 30) /* start convertion of regular channels */
 #define ADC1_SR_EOC (1ul << 1)
 #define ADC1_DR_DATA_MASK (0xFFFul)
@@ -103,13 +104,15 @@ int main (void)
     ADC1_SQR1 = ADC1_SQR1_L;
     /* Enable ADC module */
     ADC1_CR2 |= ADC1_CR2_ADON;
+    /* Enable continous convertion */
+    ADC1_CR2 |= ADC1_CR2_CONT;
+    /* Start ADC conversion */
+    ADC1_CR2 |= ADC1_CR2_SWSTART;
     /* Set PA5 as output*/
     GPIOA_MODER |= MODER5;
     while(1u)
     {
         /*** ADC read ***/
-        /* Start ADC conversion */
-        ADC1_CR2 |= ADC1_CR2_SWSTART;
         /* Wait for convertion to be completed. */
         while (ADC1_SR_EOC!=(ADC1_SR & ADC1_SR_EOC));
         /* Read converted result. */
